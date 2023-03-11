@@ -25,5 +25,48 @@ SynthDef("hat", { | amp=0.1 |
 	Out.ar(0, sig);
 }).add;
 )
-
 Synth("hat");
+
+
+(
+SynthDef(\hat, { | amp=0.1 |
+	var sig;
+	sig = WhiteNoise.ar;
+	sig = HPF.ar(sig, 8000);
+	sig = sig * amp;
+	Out.ar(0, sig);
+}).add;
+)
+Synth(\hat); //8000Hz以下の低い音が消える
+
+
+(
+SynthDef(\hat, { | amp=0.1 |
+	var sig, env;
+	//パーカッションっぽい音の減衰を作る
+	env = EnvGen.kr(Env.perc(0, 0.03), doneAction: 2);
+	sig = WhiteNoise.ar;
+	sig = HPF.ar(sig, 8000);
+	sig = sig * amp * env;
+	Out.ar(0, sig);
+}).add;
+)
+Synth(\hat); //短い音
+
+
+(
+SynthDef(\hat, { | amp=0.1 |
+	var sig, env;
+	env = EnvGen.kr(Env.perc(0, 0.03), doneAction: 2);
+	sig = WhiteNoise.ar;
+	sig = HPF.ar(sig, 8000);
+	sig = sig * amp * env;
+	sig = Pan2.ar(sig, pan);
+	Out.ar(0, sig);
+}).add;
+)
+//シンセに引数をわたす
+Synth(\hat, [pan: 0]); //ステレオの中央
+Synth(\hat, [pan: -1]); //ステレオの左
+Synth(\hat, [pan: 1]); //ステレオの右
+
